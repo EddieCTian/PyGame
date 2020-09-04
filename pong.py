@@ -1,4 +1,4 @@
-# Tom's pong, taken from https://www.pygame.org/docs/tut/MakeGames.html
+# Adapted from https://www.pygame.org/docs/tut/MakeGames.html
 
 try:
     # always import

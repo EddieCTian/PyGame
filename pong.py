@@ -39,7 +39,6 @@ class Ball(pygame.sprite.Sprite): #pygame.sprite.Sprite means it inherits that c
         newpos = self.calcnewpos(self.rect,self.vector)
         self.rect = newpos
         [angle,z] = self.vector
-
         if not self.area.contains(newpos):
             tl = not self.area.collidepoint(newpos.topleft)
             tr = not self.area.collidepoint(newpos.topright)
@@ -59,15 +58,26 @@ class Ball(pygame.sprite.Sprite): #pygame.sprite.Sprite means it inherits that c
             # self.hit added to prevent ball getting stuck in bat
 
             if self.rect.colliderect(player1.rect) == 1 and not self.hit:
-                angle = math.pi - angle
+                angle = self.bat_hit(angle, player1.rect.centery, 0)
+                # angle = math.pi-angle
+                print(angle)
                 self.hit = not self.hit
             elif self.rect.colliderect(player2.rect) == 1 and not self.hit:
-                angle = math.pi - angle
+                angle = self.bat_hit(angle, player2.rect.centery, 1)
+                print(angle)
                 self.hit = not self.hit
             elif self.hit:
                 self.hit = not self.hit
         self.vector = [angle,z]
         return out
+    
+    def bat_hit(self, angle, bat_center, side):
+        diff=self.rect.centery-bat_center
+        if side==0:
+            return_=float(math.pi)-angle+float(diff)/100*2
+        if side==1:
+            return_=float(math.pi)-angle-float(diff)/100*2
+        return return_
 
     def calcnewpos(self,rect,vector):
         (angle,z) = vector
@@ -123,9 +133,9 @@ def main():
 
     global ball_speed, bat_speed, angle
 
-    angle=0
-    ball_speed=5
-    bat_speed=10
+    angle=0.0
+    ball_speed=3.0
+    bat_speed=5.0
 
     # init screen
     pygame.init()
@@ -276,7 +286,7 @@ def main():
 
             screen.blit(background, (0, 0))
 
-            speed=ball_speed*[-1.0, 1.0][random.randint(0, 1)]
+            speed=float(ball_speed*[-1.0, 1.0][random.randint(0, 1)])
             ball.reinit([angle, speed])
 
         # update ball position
